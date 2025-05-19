@@ -1,0 +1,8 @@
+int main() {
+    int x = 10;
+    float y = 4.5;
+    char c = 'a';
+    if (x > y) {
+        x = x + 1;
+    }
+}
