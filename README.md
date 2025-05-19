@@ -1,0 +1,1 @@
+# Projeto-LF--Constru-o-de-um-Scanner
