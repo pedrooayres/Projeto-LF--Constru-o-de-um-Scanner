@@ -1,9 +1,5 @@
 int main() {
-    int x = 10;
-    float y = 4.5;
-    char c = 'a';
-    if (x > y) {
-        // comentário
-        x = x + 1;
-    }
+    int a, b;
+    a = 10;
+    b = a + 5;
 }
