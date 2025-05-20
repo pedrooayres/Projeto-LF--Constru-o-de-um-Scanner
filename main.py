@@ -1,5 +1,6 @@
 import sys
 from scanner import Scanner
+from parser import Parser
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -9,8 +10,8 @@ if __name__ == "__main__":
     scanner = Scanner(sys.argv[1])
     try:
         tokens = scanner.tokenizar()
-        for token in tokens:
-            print(token)
+        parser = Parser(tokens)
+        parser.programa()
         print("Compilacao concluida com sucesso.")
     except Exception as e:
-        print(f"Erro na analise lexica: {e}")
+        print(f"Erro na compilacao: {e}")
