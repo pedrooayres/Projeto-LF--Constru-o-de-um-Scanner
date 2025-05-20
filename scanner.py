@@ -51,6 +51,12 @@ class Scanner:
                             raise Exception(f"Erro: Comentário de bloco não encerrado (linha {self.linha})")
                         if c == '*' and self.espiar() == '/':
                             self.avancar()
+                            if c == "=":
+                                if self.espiar() == "=":
+                                    self.avancar()
+                                    self.tokens.append(Token('OP_REL','==',self.linha,self.coluna -1))
+                                else: 
+                                    self.tokens.append(Token('ATRIB', '=', self.linha, self.coluna - 1))                                
                             break
                     continue
 
