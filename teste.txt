@@ -5,4 +5,9 @@ int main() {
     b = a + 5;
     c = 0;
     d = c/b;
+    if(d > a){
+        printf("ERROR");
+    }else{
+        printf("Funciona");
+    }
 }
