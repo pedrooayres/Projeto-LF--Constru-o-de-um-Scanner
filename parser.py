@@ -38,7 +38,7 @@ class Parser:
         while self.atual().lexema in {"int", "float", "char"}:
             self.declarar_variaveis()
 
-        while self.atual().tipo in {"IDENT"}:
+        while self.atual().lexema in {"if", "while", "do", "for"} or self.atual().tipo == "IDENT":
             self.comando()
 
         if self.atual().lexema != "}": self.erro("Esperado '}'")
@@ -62,19 +62,33 @@ class Parser:
         self.consumir()
 
     def comando(self):
-        ident = self.atual()
-        if not self.ts.buscar(ident.lexema):
-            self.erro(f"Variavel '{ident.lexema}' nao declarada")
-        self.consumir()
-        if self.atual().lexema != "=": self.erro("Esperado '='")
-        self.consumir()
-        self.expressao()
-        if self.atual().lexema != ";": self.erro("Esperado ';'")
-        self.consumir()
+        if self.atual().lexema == "if":
+            self.consumir()
+            if self.atual().lexema != "(": self.erro("Esperado '(' apos if")
+            self.consumir()
+            self.expressao()
+            if self.atual().lexema != ")": self.erro("Esperado ')' apos condicao do if")
+            self.consumir()
+            self.bloco()
+            if self.atual().lexema == "else":
+                self.consumir()
+                self.bloco()
+        elif self.atual().tipo == "IDENT":
+            ident = self.atual()
+            if not self.ts.buscar(ident.lexema):
+                self.erro(f"Variavel '{ident.lexema}' nao declarada")
+            self.consumir()
+            if self.atual().lexema != "=": self.erro("Esperado '='")
+            self.consumir()
+            self.expressao()
+            if self.atual().lexema != ";": self.erro("Esperado ';'")
+            self.consumir()
+        else:
+            self.erro("Comando invalido")
 
     def expressao(self):
         self.termo()
-        while self.atual().lexema in {"+", "-"}:
+        while self.atual().lexema in {"+", "-", "<", ">", "<=", ">=", "==", "!="}:
             self.consumir()
             self.termo()
 
@@ -85,7 +99,7 @@ class Parser:
             self.fator()
 
     def fator(self):
-        if self.atual().tipo in {"CONST_INT", "CONST_REAL", "CONST_CHAR"}:
+        if self.atual().tipo in {"CONST_INT", "CONST_REAL", "CONST_CHAR", "CONST_STRING"}:
             self.consumir()
         elif self.atual().tipo == "IDENT":
             if not self.ts.buscar(self.atual().lexema):
