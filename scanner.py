@@ -1,4 +1,3 @@
-# scanner.py
 from token import Token
 from lexer_rules import RESERVADAS, OPERADORES_ARIT, OPERADORES_REL, MARCADORES
 
@@ -36,8 +35,7 @@ class Scanner:
 
             if c is None or c.isspace():
                 continue
-
-            # Comentários
+            
             if c == '/':
                 proximo = self.espiar()
                 if proximo == '/':
@@ -54,8 +52,7 @@ class Scanner:
                             self.avancar()
                             break
                     continue
-
-            # Identificadores ou palavras reservadas
+                
             if c.isalpha() or c == '_':
                 lexema = c
                 while self.espiar() and (self.espiar().isalnum() or self.espiar() == '_'):
@@ -64,7 +61,6 @@ class Scanner:
                 self.tokens.append(Token(tipo, lexema, self.linha, self.coluna - len(lexema)))
                 continue
 
-            # Constantes inteiras e reais
             if c.isdigit():
                 lexema = c
                 is_float = False
@@ -81,7 +77,6 @@ class Scanner:
                 self.tokens.append(Token(tipo, lexema, self.linha, self.coluna - len(lexema)))
                 continue
 
-            # Constantes de caractere
             if c == "'":
                 lexema = c
                 ch = self.avancar()
@@ -94,7 +89,6 @@ class Scanner:
                 self.tokens.append(Token('CONST_CHAR', lexema, self.linha, self.coluna - len(lexema)))
                 continue
 
-            # Operadores relacionais
             for op in sorted(OPERADORES_REL, key=len, reverse=True):
                 if self.codigo.startswith(op, self.pos - 1):
                     self.tokens.append(Token('OP_REL', op, self.linha, self.coluna - 1))
@@ -102,17 +96,12 @@ class Scanner:
                         self.avancar()
                     break
             else:
-                # Operadores aritméticos
                 if c in OPERADORES_ARIT:
                     self.tokens.append(Token('OP_ARIT', c, self.linha, self.coluna - 1))
                     continue
-
-                # Marcadores
                 if c in MARCADORES:
                     self.tokens.append(Token('MARCADOR', c, self.linha, self.coluna - 1))
                     continue
-
-                # Operador de atribuição ou relacional
                 if c == '=':
                     if self.espiar() == '=':
                         self.avancar()
@@ -120,13 +109,9 @@ class Scanner:
                     else:
                         self.tokens.append(Token('ATRIB', '=', self.linha, self.coluna - 1))
                     continue
-
-                # Exclamação isolada
                 if c == '!':
                     if self.espiar() != '=':
                         raise Exception(f"Erro: Exclamação isolada (linha {self.linha})")
-
-                # Caractere inválido
                 raise Exception(f"Erro: Caractere inválido '{c}' (linha {self.linha})")
 
         self.tokens.append(Token('EOF', '', self.linha, self.coluna))
