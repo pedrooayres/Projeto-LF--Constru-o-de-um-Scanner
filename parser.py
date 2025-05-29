@@ -1,3 +1,4 @@
+# parser.py
 from token import Token
 from tabela_simbolos import TabelaSimbolos, Simbolo
 
@@ -38,7 +39,7 @@ class Parser:
         while self.atual().lexema in {"int", "float", "char"}:
             self.declarar_variaveis()
 
-        while self.atual().lexema in {"if", "while", "do", "for"} or self.atual().tipo == "IDENT":
+        while self.atual().lexema in {"if", "while", "do", "for", "printf", "break", "continue"} or self.atual().tipo == "IDENT":
             self.comando()
 
         if self.atual().lexema != "}": self.erro("Esperado '}'")
@@ -73,6 +74,57 @@ class Parser:
             if self.atual().lexema == "else":
                 self.consumir()
                 self.bloco()
+
+        elif self.atual().lexema == "while":
+            self.consumir()
+            if self.atual().lexema != "(": self.erro("Esperado '(' apos while")
+            self.consumir()
+            self.expressao()
+            if self.atual().lexema != ")": self.erro("Esperado ')' apos condicao do while")
+            self.consumir()
+            self.bloco()
+
+        elif self.atual().lexema == "do":
+            self.consumir()
+            self.bloco()
+            if self.atual().lexema != "while": self.erro("Esperado 'while' apos bloco do")
+            self.consumir()
+            if self.atual().lexema != "(": self.erro("Esperado '(' apos while")
+            self.consumir()
+            self.expressao()
+            if self.atual().lexema != ")": self.erro("Esperado ')' apos condicao do while")
+            self.consumir()
+            if self.atual().lexema != ";": self.erro("Esperado ';' apos do-while")
+            self.consumir()
+
+        elif self.atual().lexema == "for":
+            self.consumir()
+            if self.atual().lexema != "(": self.erro("Esperado '(' apos for")
+            self.consumir()
+            self.comando()
+            self.expressao()
+            if self.atual().lexema != ";": self.erro("Esperado ';' apos expressao de condicao")
+            self.consumir()
+            self.comando()
+            if self.atual().lexema != ")": self.erro("Esperado ')' apos for")
+            self.consumir()
+            self.bloco()
+
+        elif self.atual().lexema == "printf":
+            self.consumir()
+            if self.atual().lexema != "(": self.erro("Esperado '(' apos printf")
+            self.consumir()
+            self.expressao()
+            if self.atual().lexema != ")": self.erro("Esperado ')' apos argumento de printf")
+            self.consumir()
+            if self.atual().lexema != ";": self.erro("Esperado ';' apos printf")
+            self.consumir()
+
+        elif self.atual().lexema == "break" or self.atual().lexema == "continue":
+            self.consumir()
+            if self.atual().lexema != ";": self.erro("Esperado ';' apos break/continue")
+            self.consumir()
+
         elif self.atual().tipo == "IDENT":
             ident = self.atual()
             if not self.ts.buscar(ident.lexema):
@@ -83,6 +135,7 @@ class Parser:
             self.expressao()
             if self.atual().lexema != ";": self.erro("Esperado ';'")
             self.consumir()
+
         else:
             self.erro("Comando invalido")
 
