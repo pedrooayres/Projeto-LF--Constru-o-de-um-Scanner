@@ -1,8 +1,6 @@
-# tabela_simbolos.py
-
 class Simbolo:
     def __init__(self, lexema, tipo, escopo):
-        self.lexema = lexema      # Nome da variável
+        self.lexema = lexema    
         self.tipo = tipo          # Tipo da variável (int, float, char, etc.)
         self.escopo = escopo      # Nível de escopo em que a variável foi declarada
 

@@ -1,5 +1,8 @@
 int main() {
-    int int, b;
+    int a,b;
+    float c,d;
     a = 10;
     b = a + 5;
+    c = 0;
+    d = c/b;
 }
