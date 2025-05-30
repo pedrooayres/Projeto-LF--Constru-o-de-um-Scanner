@@ -1,4 +1,3 @@
-# parser.py
 from token import Token
 from tabela_simbolos import TabelaSimbolos, Simbolo
 

@@ -1,13 +1,5 @@
 int main() {
-    int a,b;
-    float c,d;
-    a = 10;
-    b = a + 5;
-    c = 0;
-    d = c/b;
-    if(d > a){
-        printf("ERROR");
-    }else{
-        printf("Funciona");
-    }
+    int a, b;
+    a = 3;
+    b = 3;
 }
